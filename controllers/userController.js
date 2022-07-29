@@ -143,11 +143,11 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
   const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
 
   if (!isPasswordMatched) {
-    return next(new ErrorHandler("Old password is incorrect", 400));
+    return res.status(400).json({message: "Old password is incorrect"});
   }
 
   if (req.body.newPassword !== req.body.confirmPassword) {
-    return next(new ErrorHandler("password does not match", 400));
+    return res.status(400).json({message: "password does not match"});
   }
 
   user.password = req.body.newPassword;
@@ -233,9 +233,7 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
   if (!user) {
-    return next(
-      new ErrorHandler(`User does not exist with Id: ${req.params.id}`, 400)
-    );
+    return res.status(400).json({message: `User does not exist with Id: ${req.params.id}`});
   }
 
   // const imageId = user.avatar.public_id;
